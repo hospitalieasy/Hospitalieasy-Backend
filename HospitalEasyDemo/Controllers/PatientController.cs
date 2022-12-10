@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HospitalEasyDemo.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -21,8 +22,8 @@ namespace HospitalEasyDemo.Controllers
         public JsonResult Get()
         {
             string query = @"
-                            select PatientId, Password from
-                            dbo.Tbl_PatientLogin
+                            select PatientId,Email,Password from
+                            dbo.Tbl_Patient
                             ";
 
             DataTable table = new DataTable();
@@ -45,5 +46,9 @@ namespace HospitalEasyDemo.Controllers
 
             return new JsonResult(table);
         }
+
+     
+
+
     }
 }
