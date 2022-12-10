@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace HospitalEasyDemo.Controllers
 {
@@ -47,6 +49,36 @@ namespace HospitalEasyDemo.Controllers
             return new JsonResult(table);
         }
 
+        [HttpPut]
+        public string Put(Patient patient)
+        {
+            try
+            {
+                DataTable table = new DataTable();
+
+                string query = @"
+                    update Tbl_Patient set Email ='" + patient.Email + @"',Password ='" + patient.Password + @"' 
+                        where PatientId = " + patient.PatientId + @"
+
+                ";
+
+                string sqlDataSource = _configuration.GetConnectionString("HospitalEasyApp");
+
+                using (var con = new SqlConnection(sqlDataSource))
+                using (var cmd = new SqlCommand(query, con))
+                using (var da = new SqlDataAdapter(cmd))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    da.Fill(table);
+                }
+                return "Updated Successfuly";
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
      
 
 
