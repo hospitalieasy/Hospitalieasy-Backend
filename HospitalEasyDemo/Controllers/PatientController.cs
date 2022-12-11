@@ -25,7 +25,7 @@ namespace HospitalEasyDemo.Controllers
         {
             string query = @"
                             select PatientId,Email,Password from
-                            dbo.Tbl_Patient
+                            dbo.Patient
                             ";
 
             DataTable table = new DataTable();
@@ -57,7 +57,7 @@ namespace HospitalEasyDemo.Controllers
                 DataTable table = new DataTable();
 
                 string query = @"
-                    update Tbl_Patient set Email ='" + patient.Email + @"',Password ='" + patient.Password + @"' 
+                    update dbo.Patient set Email ='" + patient.Email + @"',Password ='" + patient.Password + @"' 
                         where PatientId = " + patient.PatientId + @"
 
                 ";
@@ -76,7 +76,7 @@ namespace HospitalEasyDemo.Controllers
             catch (System.Exception)
             {
 
-                throw;
+                return "Failed to update";
             }
         }
      
