@@ -79,6 +79,44 @@ namespace HospitalEasyDemo.Controllers
                 return "Failed to update";
             }
         }
+
+        [HttpPost]
+        public string Post(Patient patient)
+        {
+            try
+            {
+                DataTable table = new DataTable();
+
+                string query = @"
+                        insert into dbo.Patient (Name,Surname,BirthDate,Email,Password,Telephone)
+                        Values(
+                                '"+patient.Name+@"'
+                                ,'"+patient.Surname+ @"'
+                                ,'"+patient.BirthDate+@"'
+                                ,'"+patient.Email+@"'
+                                ,'"+patient.Password+@"'
+                                ,'"+patient.Telephone+@"'
+                                )
+                    
+                ";
+
+                string sqlDataSource = _configuration.GetConnectionString("HospitalEasyApp");
+
+                using (var con = new SqlConnection(sqlDataSource))
+                using (var cmd = new SqlCommand(query, con))
+                using (var da = new SqlDataAdapter(cmd))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    da.Fill(table);
+                }
+                return "Added Successfuly";
+            }
+            catch (System.Exception)
+            {
+
+                return "Failed to add";
+            }
+        }
      
 
 
