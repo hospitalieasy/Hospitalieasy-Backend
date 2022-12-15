@@ -20,12 +20,12 @@ namespace HospitalEasyDemo.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public JsonResult Get(int id)
         {
             string query = @"
                             select PatientId,Name,Surname,Birthdate,Email,Password,Telno from
-                            Tbl_Patient Where PatientId = @p1
+                            Tbl_Patient
                             ";
 
             DataTable table = new DataTable();
@@ -39,7 +39,7 @@ namespace HospitalEasyDemo.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@p1", id);
+                    
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
