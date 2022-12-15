@@ -20,12 +20,12 @@ namespace HospitalEasyDemo.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
-        public JsonResult Get()
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
         {
             string query = @"
-                            select PatientId,Email,Password from
-                            dbo.Patient
+                            select PatientId,Name,Surname,Birthdate,Email,Password,Telno from
+                            Tbl_Patient Where PatientId = @p1
                             ";
 
             DataTable table = new DataTable();
@@ -39,6 +39,7 @@ namespace HospitalEasyDemo.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    myCommand.Parameters.AddWithValue("@p1", id);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -49,16 +50,19 @@ namespace HospitalEasyDemo.Controllers
             return new JsonResult(table);
         }
 
-        [HttpPut]
-        public string Put(Patient patient)
+        
+        [HttpPut("{id}")]
+        public string Put(Patient patient,int id)
         {
             try
             {
                 DataTable table = new DataTable();
 
                 string query = @"
-                    update dbo.Patient set Email ='" + patient.Email + @"',Password ='" + patient.Password + @"' 
-                        where PatientId = " + patient.PatientId + @"
+                    update Tbl_Patient set Name ='" + patient.Name + @"',Surname ='" + patient.Surname + @"'
+                        ,Birthdate ='" + patient.BirthDate + @"',Email = '"+patient.Email+@"'
+                        ,Password = '"+patient.Password+@"',Telno = '"+patient.Telno+@"'
+                        where PatientId = @p1
 
                 ";
 
@@ -68,6 +72,7 @@ namespace HospitalEasyDemo.Controllers
                 using (var cmd = new SqlCommand(query, con))
                 using (var da = new SqlDataAdapter(cmd))
                 {
+                    cmd.Parameters.AddWithValue("@p1", id);
                     cmd.CommandType = CommandType.Text;
                     da.Fill(table);
                 }
@@ -88,14 +93,14 @@ namespace HospitalEasyDemo.Controllers
                 DataTable table = new DataTable();
 
                 string query = @"
-                        insert into dbo.Patient (Name,Surname,BirthDate,Email,Password,Telephone)
+                        insert into Tbl_Patient (Name,Surname,Birthdate,Email,Password,Telno)
                         Values(
                                 '"+patient.Name+@"'
                                 ,'"+patient.Surname+ @"'
                                 ,'"+patient.BirthDate+@"'
                                 ,'"+patient.Email+@"'
                                 ,'"+patient.Password+@"'
-                                ,'"+patient.Telephone+@"'
+                                ,'"+patient.Telno+@"'
                                 )
                     
                 ";
@@ -118,7 +123,7 @@ namespace HospitalEasyDemo.Controllers
             }
         }
      
-
-
+        
+        
     }
 }

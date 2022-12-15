@@ -33,6 +33,8 @@ namespace HospitalEasyDemo
             });
 
 
+
+
             //JSON Serializer
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
@@ -49,6 +51,8 @@ namespace HospitalEasyDemo
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("AllowOrigin");
 
             app.UseHttpsRedirection();
 
