@@ -21,7 +21,7 @@ namespace HospitalEasyDemo.Controllers
         }
 
         [HttpGet]
-        public JsonResult Get(int id)
+        public JsonResult Get(int id) //Function that returns all data in the database in JSON format
         {
             string query = @"
                             select PatientId,Name,Surname,Birthdate,Email,Password,Telno from
@@ -39,7 +39,7 @@ namespace HospitalEasyDemo.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    
+
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -50,9 +50,42 @@ namespace HospitalEasyDemo.Controllers
             return new JsonResult(table);
         }
 
-        
+        [HttpGet("{id}")]
+        public JsonResult GetById(int id) //Function that returns data in database in JSON format with patient_id
+        {
+
+
+            string query = @"
+                            select PatientId,Name,Surname,Birthdate,Email,Password,Telno from
+                            Tbl_Patient Where PatientId = @p1
+                            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("HospitalEasyApp");
+
+            SqlDataReader myReader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@p1", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+
         [HttpPut("{id}")]
-        public string Put(Patient patient,int id)
+        public string Put(Patient patient, int id) //Function to update data in database according to patient_id
         {
             try
             {
@@ -60,8 +93,8 @@ namespace HospitalEasyDemo.Controllers
 
                 string query = @"
                     update Tbl_Patient set Name ='" + patient.Name + @"',Surname ='" + patient.Surname + @"'
-                        ,Birthdate ='" + patient.BirthDate + @"',Email = '"+patient.Email+@"'
-                        ,Password = '"+patient.Password+@"',Telno = '"+patient.Telno+@"'
+                        ,Birthdate ='" + patient.BirthDate + @"',Email = '" + patient.Email + @"'
+                        ,Password = '" + patient.Password + @"',Telno = '" + patient.Telno + @"'
                         where PatientId = @p1
 
                 ";
@@ -86,7 +119,7 @@ namespace HospitalEasyDemo.Controllers
         }
 
         [HttpPost]
-        public string Post(Patient patient)
+        public string Post(Patient patient) //Function that creates a new patient record into the database
         {
             try
             {
@@ -95,12 +128,12 @@ namespace HospitalEasyDemo.Controllers
                 string query = @"
                         insert into Tbl_Patient (Name,Surname,Birthdate,Email,Password,Telno)
                         Values(
-                                '"+patient.Name+@"'
-                                ,'"+patient.Surname+ @"'
-                                ,'"+patient.BirthDate+@"'
-                                ,'"+patient.Email+@"'
-                                ,'"+patient.Password+@"'
-                                ,'"+patient.Telno+@"'
+                                '" + patient.Name + @"'
+                                ,'" + patient.Surname + @"'
+                                ,'" + patient.BirthDate + @"'
+                                ,'" + patient.Email + @"'
+                                ,'" + patient.Password + @"'
+                                ,'" + patient.Telno + @"'
                                 )
                     
                 ";
@@ -122,8 +155,8 @@ namespace HospitalEasyDemo.Controllers
                 return "Failed to add";
             }
         }
-     
-        
-        
+
+
+
     }
 }
